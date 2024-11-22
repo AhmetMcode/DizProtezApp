@@ -1,0 +1,123 @@
+﻿<Page x:Class="DizProtezApp.TestSelectionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Test Selection Page">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="81*" />
+            <ColumnDefinition Width="107*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Section: Test Types and Descriptions -->
+        <Border Grid.Column="0" Margin="0,0,20,0" Background="#ffffff" Padding="20" CornerRadius="10" BorderBrush="#dddddd" BorderThickness="1">
+            <StackPanel>
+                <TextBlock FontSize="38" FontWeight="Bold" Text="Select a Test Type" Margin="0,0,0,20" Foreground="#333"/>
+                <ListBox Name="TestList" FontSize="28" SelectionChanged="TestList_SelectionChanged" Background="#f7f7f7" BorderBrush="#dddddd" Foreground="#444">
+                    <ListBoxItem Content="ASTM F1223 Anterior-Posterior (A-P) Test" />
+                    <ListBoxItem Content="ASTM F1223 Medial-Lateral (M-L) Test" />
+                    <ListBoxItem Content="ASTM F1223 Internal-External Rotation Test" />
+                    <ListBoxItem Content="ASTM F2722 Rotational Stops of Tibial Baseplate" />
+                    <ListBoxItem Content="ASTM F2723 Mobile Knee Dislocation Resistance Test" />
+                    <ListBoxItem Content="ASTM F2777 High-Flexion Durability and Deformation" />
+                    <ListBoxItem Content="ASTM F2724 Mobile Knee Dislocation Test" />
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <!-- Right Section: Selected Test Details -->
+        <Border Grid.Column="1" Background="#ffffff" Padding="20" CornerRadius="10" BorderBrush="#dddddd" BorderThickness="1">
+            <StackPanel>
+                <TextBlock FontSize="34" FontWeight="Bold" Text="Test Details" Margin="0,0,0,20" Foreground="#333"/>
+                <TextBlock Name="TestDescription" Text="Select a test to view its details." TextWrapping="Wrap" FontSize="24" Margin="0,0,0,10" Foreground="#555"/>
+
+                <!-- Parameters: Editable Fields -->
+                <StackPanel Name="ParametersStack" Margin="0,20,0,10">
+
+                    <!-- Force Input with Unit -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="ForceStack">
+                        <TextBlock Text="Force (N):" FontSize="20" FontWeight="Bold" Margin="0,5,10,5" />
+                        <TextBox Name="ForceInput" FontSize="20" Width="100" Margin="0,5,0,5"/>
+                        <TextBlock Text="N" FontSize="20" VerticalAlignment="Center" Margin="10,0,0,0" Name="ForceUnit"/>
+                    </StackPanel>
+
+                    <!-- Speed Input with Unit -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="SpeedStack">
+                        <TextBlock Text="Speed (mm/s):" FontSize="20" FontWeight="Bold" Margin="0,5,10,5" Name="SpeedLabel"/>
+                        <TextBox Name="SpeedInput" FontSize="20" Width="100" Margin="0,5,0,5"/>
+                        <TextBlock Text="mm/s" FontSize="20" VerticalAlignment="Center" Margin="10,0,0,0" Name="SpeedUnit"/>
+                    </StackPanel>
+
+                    <!-- Flexion Angles with Single Value -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="FlexionAnglesStack">
+                        <TextBlock Text="Flexion Angles:" FontSize="20" FontWeight="Bold" Margin="0,5,10,5"/>
+                        <AdornerDecorator>
+                            <TextBox Name="FlexionInput" FontSize="20" Width="100" PreviewTextInput="NumericInput_PreviewTextInput" Margin="0,5,0,5" />
+                        </AdornerDecorator>
+                        <TextBlock Text="degree" FontSize="20" VerticalAlignment="Center" Margin="10,0,0,0" Name="FlexionUnit"/>
+                    </StackPanel>
+
+                    <!-- Torsional loading with Single Value -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="TorsionalLoadStack">
+                        <TextBlock Text="Torsional Load (Torque):" FontSize="20" FontWeight="Bold" Margin="0,5,10,5"/>
+                        <AdornerDecorator>
+                            <TextBox Name="TorsionalLoad" FontSize="20" Width="100" PreviewTextInput="NumericInput_PreviewTextInput" Margin="0,5,0,5" />
+                        </AdornerDecorator>
+                        <ComboBox Name="TorsionalLoadUnit" FontSize="20" Width="100" Margin="10,0,0,0">
+                            <ComboBoxItem Content="N" />
+                            <ComboBoxItem Content="N.m" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Displacement Limits with Min-Max -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="DisplacementLimitsStack">
+                        <TextBlock Text="Displacement Limits (Min - Max):" FontSize="20" FontWeight="Bold" Margin="0,5,10,5"/>
+                        <AdornerDecorator>
+                            <TextBox Name="DisplacementNegative" FontSize="20" Width="100" Margin="0,5,10,5" />
+                        </AdornerDecorator>
+                        <AdornerDecorator>
+                            <TextBox Name="DisplacementPositive" FontSize="20" Width="100" Margin="0,5,0,5" />
+                        </AdornerDecorator>
+                        <TextBlock Text="mm" FontSize="20" VerticalAlignment="Center" Margin="10,0,0,0" Name="DisplacementUnit"/>
+                    </StackPanel>
+
+                    <!-- RotationOrTorqueLimit with Min-Max -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="RotationOrTorqueLimitStack">
+                        <TextBlock Text="Measured Rotation Or Torque Limit (Min - Max):" FontSize="20" FontWeight="Bold" Margin="0,5,10,5"/>
+                        <AdornerDecorator>
+                            <TextBox Name="MeasuredRotationOrTorqueMin" FontSize="20" Width="100" Margin="0,5,10,5" />
+                        </AdornerDecorator>
+                        <AdornerDecorator>
+                            <TextBox Name="MeasuredRotationOrTorqueMax" FontSize="20" Width="100" Margin="0,5,0,5" />
+                        </AdornerDecorator>
+                        <ComboBox Name="MeasuredRotationOrTorqueUnit" FontSize="20" Width="100" Margin="10,0,0,0" SelectionChanged="MeasuredRotationOrTorqueUnit_SelectionChanged">
+                            <ComboBoxItem Content="degree" />
+                            <ComboBoxItem Content="N.m" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Cycle Count Input for ASTM F2722 and F2723 -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Name="CycleCountStack">
+                        <TextBlock Text="Cycle Count:" FontSize="20" FontWeight="Bold" Margin="0,5,10,5"/>
+                        <AdornerDecorator>
+                            <TextBox Name="CycleCountInput" FontSize="20" Width="100" Margin="0,5,0,5" />
+                        </AdornerDecorator>
+                    </StackPanel>
+
+                </StackPanel>
+                <Button Content="Start Test" FontSize="24" Width="150" Height="44" Background="#4CAF50" Foreground="White" BorderThickness="0" Cursor="Hand" FontWeight="Bold" FontFamily="Microsoft YaHei" Click="Button_Click"/>
+
+            </StackPanel>
+        </Border>
+        <!-- Sol alt köşeye PLC Kontrol Paneli butonu -->
+        <Button Grid.Row="1" Grid.Column="0" Content="PLC Kontrol Paneli" 
+            FontSize="24" Width="200" Height="50" 
+            Margin="0,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+            Background="#4CAF50" Foreground="White" BorderThickness="0" 
+            Cursor="Hand" Click="OpenPLCControlPanel_Click"/>
+    </Grid>
+</Page>

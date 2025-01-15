@@ -13,11 +13,8 @@ namespace DizProtezApp
             InitializeComponent();
             _serviceManager = serviceManager;
 
-            // Initialize services if needed
-            _serviceManager.InitializeServices();
-
-            // Load the starting page into the Frame
-            MainFrame.Navigate(new TestSelectionPage());
+            // SqlService'i TestSelectionPage'e geçir
+            MainFrame.Navigate(new TestSelectionPage(_serviceManager.SqlService));
         }
     }
 }

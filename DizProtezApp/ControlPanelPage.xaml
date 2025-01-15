@@ -1,396 +1,215 @@
-﻿<Page
+﻿<Page x:Class="DizProtezApp.ControlPanelPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="DizProtezApp.ControlPanelPage"
-      Title="ControlPanelPage" Width="auto">
+      Title="ControlPanelPage" Width="auto" Height="auto">
 
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <!-- Servo 1 -->
-            <RowDefinition Height="*" />
-            <!-- Servo 2 -->
-            <RowDefinition Height="*" />
-            <!-- Servo 3 -->
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="15*" />
-            <ColumnDefinition Width="61*" />
-        </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Grid.RowSpan="3" Margin="0,5,5,5" Background="#ffffff" Padding="5" CornerRadius="10" BorderBrush="#dddddd" BorderThickness="1" >
-            
-            <StackPanel>
-                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
-                    <Button Content="← Geri" FontSize="22" Width="100" Click="BackButton_Click" />
-                </StackPanel>
-                <TextBlock FontSize="38" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333"><Run Language="tr-tr" Text="Sensör Verileri"/></TextBlock>
 
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
+                <Button Content="← Geri" FontSize="22" Width="100" Click="BackButton_Click" />
             </StackPanel>
-        </Border>
 
-        <!-- Servo 1 -->
-        <Border Grid.Column="1" Grid.Row="0" Margin="5,5,5,5" Padding="10" Background="#ffffff" BorderBrush="#dddddd" BorderThickness="1" CornerRadius="10">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
+            <!-- Servo 1 -->
+            <Border Grid.Row="1" Margin="10" BorderThickness="1" BorderBrush="Gray" CornerRadius="10" Background="#f0f0f0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
 
-                <!-- Sol Taraf: Mevcut İtemler -->
-                <StackPanel Grid.Column="0" Margin="0,0,0,10" HorizontalAlignment="Center" Width="618">
-                    <TextBlock Text="Servo 1 - Alt Kızak" FontSize="24" FontWeight="Bold" Foreground="#FF0965CC" Width="300" HorizontalAlignment="Left" FontFamily="Segoe UI Black" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Button Content="Etkinleştir" Width="170" Height="50" Background="#4CAF50" Foreground="White" Click="Etkinlestir_Servo1_Button" FontSize="22" FontWeight="Bold" />
-                        <Button Content="Motor Durdur" Width="170" Height="50" Background="Red" Foreground="White" Click="MotorDurdur_Servo1_Button" FontSize="22" FontWeight="Bold" />
-                        <Button Content="Motor Reset" Width="170" Height="50" Background="#FFC107" Foreground="White" Click="MotorReset_Servo1_Button" FontSize="22" FontWeight="Bold" />
-                    </StackPanel>
+                        <TextBlock Text="Servo 1" FontSize="24" FontWeight="Bold" Foreground="Blue" HorizontalAlignment="Center"/>
 
-                    <!-- Manuel Hız ve Pozisyon Gösterge -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left">
-                        <TextBlock Text="Manuel Hız:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <TextBlock Text="0 mm/s" x:Name="Servo1SpeedText" FontSize="22" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Width="618">
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Right">
-                            <TextBlock Text="Anlık Pozisyon:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                            <TextBlock x:Name="Servo1PositionText" FontSize="22" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center" Text="0 mm  " />
+                        <!-- ANLIK POZİSYON (mm) -->
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="ANLIK POZİSYON (mm):" FontSize="18" FontWeight="Bold" Margin="5"/>
+                            <TextBox x:Name="Servo1Position" Text="{Binding Servo1CurrentPosition, Mode=OneWay, StringFormat=F3}" FontSize="18" IsReadOnly="True" Background="Orange" Foreground="White" TextAlignment="Center" Width="159" HorizontalAlignment="Left"/>
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Margin="20,5,0,10" HorizontalAlignment="Right">
-                            <TextBlock Text="Pozisyona Git:" VerticalAlignment="Center" FontSize="22" HorizontalAlignment="Right" FontWeight="Bold" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo1TargetPositionInput" Width="84" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            <TextBlock Text="mm" VerticalAlignment="Center" FontSize="16" FontStyle="Italic" />
-                            <Button Content="Git" Width="70" Height="40" Background="#4CAF50" Foreground="White" FontSize="22" Click="GoPosition_Servo1_Button" FontWeight="Bold" Margin="5,0,0,0"/>
+                        <!-- Pozisyona Git -->
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="Pozisyona Git (mm):" FontSize="18" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox x:Name="Servo1TargetPosition" Text="{Binding Servo1TargetPosition, Mode=TwoWay, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}" Width="100" FontSize="18" Margin="5"/>
+                            <Button x:Name="GoPositionButton" Content="Git" FontSize="18" Width="100" Click="GoPosition_Servo1_Button" Margin="5" Background="Green" Foreground="White"/>
+
+
+                            <TextBox x:Name="deneme" 
+         Text="{Binding deneme, Mode=TwoWay, StringFormat=F3}" 
+         FontSize="18" 
+         Background="Orange" 
+         Foreground="White" 
+         TextAlignment="Center" 
+         Width="159" 
+         HorizontalAlignment="Left"
+         GotFocus="TextBox_GotFocus"
+         LostFocus="TextBox_LostFocus" />
+
                         </StackPanel>
+
+
+                        <!-- Manuel Hız -->
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="MANUEL HIZ mm/s:" FontSize="18" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox x:Name="ManualSpeedTextBox"
+                                    Text="{Binding Servo1ManualSpeed, Mode=TwoWay, StringFormat=F1, UpdateSourceTrigger=PropertyChanged}"
+                                     FontSize="18"
+                                     Width="100"
+                                     Margin="5"
+                                     GotFocus="TextBox_GotFocus"
+                                     LostFocus="TextBox_LostFocus" />
+
+
+                        </StackPanel>
+
+
+                        <!-- ACC ve DCC -->
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="ACC mm/s:" FontSize="18" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox x:Name="Servo1Acc" Text="{Binding Servo1Acc, Mode=TwoWay, StringFormat=F1, UpdateSourceTrigger=PropertyChanged}" Width="100" FontSize="18" Margin="5"                                      GotFocus="TextBox_GotFocus"
+                                     LostFocus="TextBox_LostFocus"/>
+
+                            <TextBlock Text="DCC mm/s:" FontSize="18" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                            <TextBox x:Name="Servo1Dcc" Text="{Binding Servo1Dcc, Mode=TwoWay, StringFormat=F1, UpdateSourceTrigger=PropertyChanged}" Width="100" FontSize="18" Margin="5"                                      GotFocus="TextBox_GotFocus"
+                                     LostFocus="TextBox_LostFocus"/>
+
+                            <Button x:Name="ToggleStartCasdButton"
+                                    Content="CASD Pasif"
+                                    FontSize="14"
+                                    Width="73"
+                                    Height="30"
+                                    Click="ToggleStartCasd_Button"
+                                    Margin="5"
+                                    Background="Red"
+                                    Foreground="White" />
+
+                        </StackPanel>
+
+
+                        <!-- Jog Hızları -->
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="İLERİ JOG HIZI mm/s:" FontSize="18" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox x:Name="Servo1ForwardJogSpeed" 
+                                     Text="{Binding Servo1ForwardJogSpeed, Mode=TwoWay, StringFormat=F1, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="100" FontSize="18" 
+                                     Margin="5"                                                                    GotFocus="TextBox_GotFocus"
+                                     LostFocus="TextBox_LostFocus"/>
+
+                            <TextBlock Text="GERİ JOG HIZI mm/s:" FontSize="18" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                            <TextBox x:Name="Servo1ReverseJogSpeed" 
+                                     Text="{Binding Servo1ReverseJogSpeed, Mode=TwoWay, StringFormat=F1, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="100" FontSize="18" 
+                                     Margin="5"                                                                     GotFocus="TextBox_GotFocus"
+                                     LostFocus="TextBox_LostFocus"/>
+                        </StackPanel>
+
+                        <!-- Home Hızları -->
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="HOME HIZ 1 mm/s:" FontSize="18" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox x:Name="Servo1HomeFirstSpeed" Text="{Binding Servo1HomeFirstSpeed, Mode=TwoWay, StringFormat=F1, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="100" 
+                                     FontSize="18" 
+                                     Margin="5"
+                                     GotFocus="TextBox_GotFocus"
+                                     LostFocus="TextBox_LostFocus"/>
+
+                            <TextBlock Text="HOME HIZ 2 mm/s:" FontSize="18" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                            <TextBox x:Name="Servo1HomeSecondSpeed" Text="{Binding Servo1HomeSecondSpeed, Mode=TwoWay, StringFormat=F1, UpdateSourceTrigger=PropertyChanged}"
+                                     Width="100" 
+                                     FontSize="18" 
+                                     Margin="5"
+                                     GotFocus="TextBox_GotFocus"
+                                     LostFocus="TextBox_LostFocus"/>
+                        </StackPanel>
+
                     </StackPanel>
 
-                    <!-- Limit İndikatörleri -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left">
-                        <TextBlock Text="Geri Limit:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="27" Height="28" Fill="Green" x:Name="Servo1BackwardLimitIndicator" />
-                        <TextBlock Text="İleri Limit:" VerticalAlignment="Center" FontSize="22" Margin="20,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="25" Height="28" Fill="Green" x:Name="Servo1ForwardLimitIndicator" />
+                    <!-- Start/Stop/Reset -->
+                    <StackPanel Grid.Column="1">
 
-                        <!-- Home İndikatörü -->
-                        <TextBlock Text="Home:" VerticalAlignment="Center" FontSize="22" Margin="40,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="27" Height="28" Fill="Green" x:Name="Servo1HomeIndicator" />
+                        <!-- INITC Toggle Button -->
+                        <Button x:Name="ToggleStartInitcButton"
+                                Content="INITC Pasif"
+                                FontSize="18"
+                                Width="150"
+                                Height="50"
+                                Background="Red"
+                                Foreground="White"
+                                Click="ToggleStartInitc_Button" Margin="0,10,0,10" />
 
-                        <!-- Home Git Butonu -->
-                        <Button Content="Home Git" Width="121" Height="40" Margin="20,0,0,0" Background="#4CAF50" Foreground="White" FontSize="22" Click="GoHome_Servo1_Button" FontWeight="Bold"/>
+                        <Button x:Name="EtkinlestirServo1Button"
+                                Content="Servo OFF"
+                                FontSize="18"
+                                Width="100"
+                                Height="50"
+                                Background="Red"
+                                Foreground="White"
+                                Click="Etkinlestir_Servo1_Button"
+                                Margin="10"/>
+
+                        <Button Content="Reset" FontSize="18" Width="100" Height="50" Background="#FFC107" Foreground="White" Click="MotorReset_Servo1_Button" Margin="10"/>
+
+                        <Button Content="Stop" FontSize="18" Width="100" Height="50" Background="Red" Foreground="White" Click="MotorDurdur_Servo1_Button" Margin="10"/>
+
+                        <Button x:Name="EtkinlestirOtoManuelButton"
+                                Content="Manuel"
+                                FontSize="18"
+                                Width="100"
+                                Height="50"
+                                Background="Red"
+                                Foreground="White"
+                                Click="OtoManuelButon"
+                                />
+
+
                     </StackPanel>
 
-                    <!-- Jog Kontrolleri -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left" Margin="0,8,0,0">
-                        <TextBlock Text="Jog Hızı:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <TextBox x:Name="Servo1JogSpeedInput" Width="100" FontSize="22" Text="100" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
-                        <TextBlock Text="mm/s" VerticalAlignment="Center" FontSize="22" Margin="0,0,20,0" FontWeight="Bold" />
-                        <Button Content="Geri Jog" Width="100" Height="40" Background="#555" Foreground="White" Click="GeriJog_Servo1_Button" FontSize="18" FontWeight="Bold" Margin="112,0,0,0" />
-                        <Button Content="İleri Jog" Width="100" Height="40" Background="#555" Foreground="White" Click="İleriJog_Servo1_Button" FontSize="18" FontWeight="Bold" />
+                    <!-- Jog and Home -->
+                    <StackPanel Grid.Column="2">
+
+                        <Button x:Name="GoHomeServo1Button"
+                                Content="Home Gönder"
+                                FontSize="18"
+                                Width="150"
+                                Height="50"
+                                Background="Blue"
+                                Foreground="White"
+                                Click="GoHomeServo1_Button"
+                                Margin="10,10,10,10" />
+
+
+                        <Button Content="Geri Jog" FontSize="18" Width="100" Height="50" Background="#555" Foreground="White"
+        PreviewMouseDown="GeriJog_MouseDown" PreviewMouseUp="GeriJog_MouseUp" Margin="10" />
+
+                        <Button Content="İleri Jog" FontSize="18" Width="100" Height="50" Background="#555" Foreground="White"
+        PreviewMouseDown="İleriJog_MouseDown" PreviewMouseUp="İleriJog_MouseUp" Margin="10" />
+
                     </StackPanel>
-                </StackPanel>
+                </Grid>
+            </Border>
 
-                <!-- Sağ Taraf: Yeni Giriş Alanları -->
-                <StackPanel Grid.Column="1" Margin="10,10,10,10">
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Width="auto" Height="auto">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Puls 1 Tur:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo1PulsInput" Width="200" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" Width="250" Height="57" Margin="0,12,0,0">
-                            <TextBlock Text="1 Turdaki Mesafe (mm):" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" VerticalAlignment="Center" />
-                            <TextBox x:Name="Servo1DistancePerTurnInput" Width="200" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </StackPanel>
+            <!-- Servo 2 -->
+            <Border Grid.Row="2" Margin="10" BorderThickness="1" BorderBrush="Gray" CornerRadius="10" Background="#f0f0f0">
+                <!-- Similar to Servo 1 -->
+            </Border>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Height="75">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Servo Hız:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo1SpeedInput" Width="200" Height="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="250">
-                            <TextBlock Text="Anlık Poz:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo1CurrentPositionInput" Width="200" Height="30" />
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Height="66">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Pozitif İvme:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo1PositiveAccelerationInput" Width="200" Height="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="250">
-                            <TextBlock Text="Negatif İvme:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo1NegativeAccelerationInput" Width="200" Height="30" />
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Grid.Column="2" Margin="10,10,10,10">
-                    <!-- Loadcell Verisi -->
-                    <TextBlock Text="Loadcell Verisi: 0.00" 
-                           FontSize="16" 
-                           Margin="0,0,0,10"
-                           HorizontalAlignment="Center" />
-
-                    <!-- Ayar Butonu -->
-                    <Button Content="Ayarlar" 
-                            Width="100" 
-                            Height="30" 
-                            HorizontalAlignment="Center" 
-                            Margin="0,0,0,10" />
-
-                    <!-- Hata Kodu -->
-                    <TextBlock Text="Hata Kodu: 000" 
-                           FontSize="14" 
-                           Foreground="Red" 
-                           HorizontalAlignment="Center" />
-                </StackPanel>
-            </Grid>
-        </Border>
-
-
-        <!-- Servo 2 -->
-        <Border Grid.Column="1" Grid.Row="1" Margin="5,5,5,5" Padding="10" Background="#ffffff" BorderBrush="#dddddd" BorderThickness="1" CornerRadius="10">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-
-                <!-- Sol Taraf: Mevcut İtemler -->
-                <StackPanel Grid.Column="0" Margin="0,0,0,10" HorizontalAlignment="Center" Width="618">
-                    <TextBlock Text="Servo 2 - Yanal Hareket" FontSize="24" FontWeight="Bold" Foreground="#FF0965CC" Width="300" HorizontalAlignment="Left" FontFamily="Segoe UI Black" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Button Content="Etkinleştir" Width="170" Height="50" Background="#4CAF50" Foreground="White" Click="Etkinlestir_Servo2_Button" FontSize="22" FontWeight="Bold" />
-                        <Button Content="Motor Durdur" Width="170" Height="50" Background="Red" Foreground="White" Click="MotorDurdur_Servo2_Button" FontSize="22" FontWeight="Bold" />
-                        <Button Content="Motor Reset" Width="170" Height="50" Background="#FFC107" Foreground="White" Click="MotorReset_Servo2_Button" FontSize="22" FontWeight="Bold" />
-                    </StackPanel>
-
-                    <!-- Manuel Hız ve Pozisyon Gösterge -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left">
-                        <TextBlock Text="Manuel Hız:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <TextBlock Text="0 mm/s" x:Name="Servo2SpeedText" FontSize="22" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Width="618">
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Right">
-                            <TextBlock Text="Anlık Pozisyon:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                            <TextBlock x:Name="Servo2PositionText" FontSize="22" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center" Text="0 mm  " />
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Margin="20,5,0,10" HorizontalAlignment="Right">
-                            <TextBlock Text="Pozisyona Git:" VerticalAlignment="Center" FontSize="22" HorizontalAlignment="Right" FontWeight="Bold" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo2TargetPositionInput" Width="84" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            <TextBlock Text="mm" VerticalAlignment="Center" FontSize="16" FontStyle="Italic" />
-                            <Button Content="Git" Width="70" Height="40" Background="#4CAF50" Foreground="White" FontSize="22" Click="GoPosition_Servo2_Button" FontWeight="Bold" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!-- Limit İndikatörleri -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left">
-                        <TextBlock Text="Geri Limit:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="27" Height="28" Fill="Green" x:Name="Servo2BackwardLimitIndicator" />
-                        <TextBlock Text="İleri Limit:" VerticalAlignment="Center" FontSize="22" Margin="20,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="25" Height="28" Fill="Green" x:Name="Servo2ForwardLimitIndicator" />
-
-                        <!-- Home İndikatörü -->
-                        <TextBlock Text="Home:" VerticalAlignment="Center" FontSize="22" Margin="40,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="27" Height="28" Fill="Green" x:Name="Servo2HomeIndicator" />
-
-                        <!-- Home Git Butonu -->
-                        <Button Content="Home Git" Width="121" Height="40" Margin="20,0,0,0" Background="#4CAF50" Foreground="White" FontSize="22" Click="GoHome_Servo2_Button" FontWeight="Bold"/>
-                    </StackPanel>
-
-                    <!-- Jog Kontrolleri -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left" Margin="0,8,0,0">
-                        <TextBlock Text="Jog Hızı:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <TextBox x:Name="Servo2JogSpeedInput" Width="100" FontSize="22" Text="100" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
-                        <TextBlock Text="mm/s" VerticalAlignment="Center" FontSize="22" Margin="0,0,20,0" FontWeight="Bold" />
-                        <Button Content="Geri Jog" Width="100" Height="40" Background="#555" Foreground="White" Click="GeriJog_Servo2_Button" FontSize="18" FontWeight="Bold" Margin="112,0,0,0" />
-                        <Button Content="İleri Jog" Width="100" Height="40" Background="#555" Foreground="White" Click="İleriJog_Servo2_Button" FontSize="18" FontWeight="Bold" />
-                    </StackPanel>
-                </StackPanel>
-
-                <!-- Sağ Taraf: Yeni Giriş Alanları -->
-                <StackPanel Grid.Column="1" Margin="10,10,10,10">
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Width="500" Height="69">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Puls 1 Tur:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo2PulsInput" Width="200" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" Width="250" Height="57" Margin="0,12,0,0">
-                            <TextBlock Text="1 Turdaki Mesafe (mm):" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" VerticalAlignment="Center" />
-                            <TextBox x:Name="Servo2DistancePerTurnInput" Width="200" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Height="75">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Servo Hız:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo2SpeedInput" Width="200" Height="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="250">
-                            <TextBlock Text="Anlık Poz:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo2CurrentPositionInput" Width="200" Height="30" />
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Height="66">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Pozitif İvme:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo2PositiveAccelerationInput" Width="200" Height="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="250">
-                            <TextBlock Text="Negatif İvme:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo2NegativeAccelerationInput" Width="200" Height="30" />
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Grid.Column="2" Margin="10,10,10,10">
-                    <!-- Loadcell Verisi -->
-                    <TextBlock Text="Loadcell Verisi: 0.00" 
-                           FontSize="16" 
-                           Margin="0,0,0,10"
-                           HorizontalAlignment="Center" />
-
-                    <!-- Ayar Butonu -->
-                    <Button Content="Ayarlar" 
-                            Width="100" 
-                            Height="30" 
-                            HorizontalAlignment="Center" 
-                            Margin="0,0,0,10" />
-
-                    <!-- Hata Kodu -->
-                    <TextBlock Text="Hata Kodu: 000" 
-                           FontSize="14" 
-                           Foreground="Red" 
-                           HorizontalAlignment="Center" />
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- Servo 3 -->
-        <Border Grid.Column="1" Grid.Row="2" Margin="5,5,5,5" Padding="10" Background="#ffffff" BorderBrush="#dddddd" BorderThickness="1" CornerRadius="10">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-
-                <!-- Sol Taraf: Mevcut İtemler -->
-                <StackPanel Grid.Column="0" Margin="0,0,0,10" HorizontalAlignment="Center" Width="618">
-                    <TextBlock Text="Servo 3 - Ağırlık Basan" FontSize="24" FontWeight="Bold" Foreground="#FF0965CC" Width="300" HorizontalAlignment="Left" FontFamily="Segoe UI Black" />
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Button Content="Etkinleştir" Width="170" Height="50" Background="#4CAF50" Foreground="White" Click="Etkinlestir_Servo3_Button" FontSize="22" FontWeight="Bold" />
-                        <Button Content="Motor Durdur" Width="170" Height="50" Background="Red" Foreground="White" Click="MotorDurdur_Servo3_Button" FontSize="22" FontWeight="Bold" />
-                        <Button Content="Motor Reset" Width="170" Height="50" Background="#FFC107" Foreground="White" Click="MotorReset_Servo3_Button" FontSize="22" FontWeight="Bold" />
-                    </StackPanel>
-
-                    <!-- Manuel Hız ve Pozisyon Gösterge -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left">
-                        <TextBlock Text="Manuel Hız:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <TextBlock Text="0 mm/s" x:Name="Servo3SpeedText" FontSize="22" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Width="618">
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Right">
-                            <TextBlock Text="Anlık Pozisyon:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                            <TextBlock x:Name="Servo3PositionText" FontSize="22" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center" Text="0 mm  " />
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Margin="20,5,0,10" HorizontalAlignment="Right">
-                            <TextBlock Text="Pozisyona Git:" VerticalAlignment="Center" FontSize="22" HorizontalAlignment="Right" FontWeight="Bold" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo3TargetPositionInput" Width="84" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            <TextBlock Text="mm" VerticalAlignment="Center" FontSize="16" FontStyle="Italic" />
-                            <Button Content="Git" Width="70" Height="40" Background="#4CAF50" Foreground="White" FontSize="22" Click="GoPosition_Servo3_Button" FontWeight="Bold" Margin="5,0,0,0"/>
-                        </StackPanel>
-                    </StackPanel>
-
-                    <!-- Limit İndikatörleri -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left">
-                        <TextBlock Text="Geri Limit:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="27" Height="28" Fill="Green" x:Name="Servo3BackwardLimitIndicator" />
-                        <TextBlock Text="İleri Limit:" VerticalAlignment="Center" FontSize="22" Margin="20,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="25" Height="28" Fill="Green" x:Name="Servo3ForwardLimitIndicator" />
-
-                        <!-- Home İndikatörü -->
-                        <TextBlock Text="Home:" VerticalAlignment="Center" FontSize="22" Margin="40,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <Ellipse Width="27" Height="28" Fill="Green" x:Name="Servo3HomeIndicator" />
-
-                        <!-- Home Git Butonu -->
-                        <Button Content="Home Git" Width="121" Height="40" Margin="20,0,0,0" Background="#4CAF50" Foreground="White" FontSize="22" Click="GoHome_Servo3_Button" FontWeight="Bold"/>
-                    </StackPanel>
-
-                    <!-- Jog Kontrolleri -->
-                    <StackPanel Orientation="Horizontal" Width="618" HorizontalAlignment="Left" Margin="0,8,0,0">
-                        <TextBlock Text="Jog Hızı:" VerticalAlignment="Center" FontSize="22" Margin="0,0,10,0" FontWeight="Bold" Foreground="#FF656565" />
-                        <TextBox x:Name="Servo3JogSpeedInput" Width="100" FontSize="22" Text="100" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
-                        <TextBlock Text="mm/s" VerticalAlignment="Center" FontSize="22" Margin="0,0,20,0" FontWeight="Bold" />
-                        <Button Content="Geri Jog" Width="100" Height="40" Background="#555" Foreground="White" Click="GeriJog_Servo3_Button" FontSize="18" FontWeight="Bold" Margin="112,0,0,0" />
-                        <Button Content="İleri Jog" Width="100" Height="40" Background="#555" Foreground="White" Click="İleriJog_Servo3_Button" FontSize="18" FontWeight="Bold" />
-                    </StackPanel>
-                </StackPanel>
-
-                <!-- Sağ Taraf: Yeni Giriş Alanları -->
-                <StackPanel Grid.Column="1" Margin="10,10,10,10">
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Width="500" Height="69">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Puls 1 Tur:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo3PulsInput" Width="200" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" Width="250" Height="57" Margin="0,12,0,0">
-                            <TextBlock Text="1 Turdaki Mesafe (mm):" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" VerticalAlignment="Center" />
-                            <TextBox x:Name="Servo3DistancePerTurnInput" Width="200" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Height="75">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Servo Hız:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo3SpeedInput" Width="200" Height="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="250">
-                            <TextBlock Text="Anlık Poz:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo3CurrentPositionInput" Width="200" Height="30" />
-                        </StackPanel>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,10" HorizontalAlignment="Left" Height="66">
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="230">
-                            <TextBlock Text="Pozitif İvme:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo3PositiveAccelerationInput" Width="200" Height="30" />
-                        </StackPanel>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" Width="250">
-                            <TextBlock Text="Negatif İvme:" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF656565" />
-                            <TextBox x:Name="Servo3NegativeAccelerationInput" Width="200" Height="30" />
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <StackPanel Grid.Column="2" Margin="10,10,10,10">
-                    <!-- Loadcell Verisi -->
-                    <TextBlock Text="Loadcell Verisi: 0.00" 
-                           FontSize="16" 
-                           Margin="0,0,0,10"
-                           HorizontalAlignment="Center" />
-
-                    <!-- Ayar Butonu -->
-                    <Button Content="Ayarlar" 
-                            Width="100" 
-                            Height="30" 
-                            HorizontalAlignment="Center" 
-                            Margin="0,0,0,10" />
-
-                    <!-- Hata Kodu -->
-                    <TextBlock Text="Hata Kodu: 000" 
-                           FontSize="14" 
-                           Foreground="Red" 
-                           HorizontalAlignment="Center" />
-                </StackPanel>
-            </Grid>
-        </Border>
-    </Grid>
+            <!-- Servo 3 -->
+            <Border Grid.Row="3" Margin="10" BorderThickness="1" BorderBrush="Gray" CornerRadius="10" Background="#f0f0f0">
+                <!-- Similar to Servo 1 -->
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </Page>

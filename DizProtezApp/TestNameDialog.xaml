@@ -1,0 +1,38 @@
+﻿<Window x:Class="DizProtezApp.TestNameDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Set Test and Specimen Name" Height="500" Width="835" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Test Name Section -->
+        <StackPanel Orientation="Vertical" Grid.Row="0">
+            <TextBlock Text="Enter a name for the test:" FontSize="16" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray" />
+            <TextBox x:Name="TestNameInput" FontSize="16" FontWeight="Bold" Height="27" />
+        </StackPanel>
+
+        <!-- Specimen Name Section -->
+        <StackPanel Orientation="Vertical" Grid.Row="1">
+            <TextBlock Text="Enter a name for the specimen:" FontSize="16" FontWeight="Bold" Margin="0,0,0,5" Foreground="Gray" />
+            <TextBox x:Name="SpecimenNameInput" FontSize="16" Text="Specimen1" FontWeight="Bold" Height="27" />
+        </StackPanel>
+
+        <!-- Dynamic Parameters Section -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="0,10,0,10">
+            <StackPanel x:Name="DynamicParametersPanel" Orientation="Vertical" />
+        </ScrollViewer>
+
+        <!-- Action Buttons -->
+        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Content="Start Test" Width="105" Margin="0,0,5,0" Click="OkButton_Click" Height="35" 
+                    Background="Green" Foreground="White" FontWeight="Bold" />
+            <Button Content="Cancel" Width="100" Click="CancelButton_Click" Height="35" 
+                    Background="Red" Foreground="White" FontWeight="Bold" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,33 +1,40 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DizProtezApp.Data;
 
 namespace DizProtezApp.Services
 {
     public class ServiceManager
     {
-        private readonly ApplicationDbContext _dbContext;
         private readonly PlcService _plcService;
+        public SqlService SqlService { get; }
 
-        public ServiceManager(ApplicationDbContext dbContext)
+        public ServiceManager(PlcService plcService, ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
-            _plcService = new PlcService(); // PlcService örneği oluşturuluyor
+            _plcService = plcService;
+            SqlService = new SqlService(dbContext);
         }
 
-        public void InitializeServices()
+        public async Task InitializeServices()
         {
-            // PLC işlemini başlatıyoruz
-            Task.Run(() =>
+            try
             {
-                _plcService.Start();
-            });
-
-            // SQL işlemini başlatıyoruz
-            Task.Run(() =>
+                // PLC bağlantısını başlat
+                bool isPlcConnected = await _plcService.Connect();
+                if (!isPlcConnected)
+                {
+                    Console.WriteLine("PLC bağlantısı başarısız oldu. Devam ediliyor...");
+                }
+                else
+                {
+                    _plcService.Start();
+                }
+            }
+            catch (Exception ex)
             {
-                SqlService sqlService = new SqlService(_dbContext, _plcService); // PlcService örneği iletiliyor
-                sqlService.Start();
-            });
+                Console.WriteLine($"Hizmetleri başlatırken hata: {ex.Message}");
+            }
         }
+
     }
 }

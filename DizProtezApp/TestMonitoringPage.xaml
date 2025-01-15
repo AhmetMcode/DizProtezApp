@@ -10,58 +10,40 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <!-- Geri Butonu için -->
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="100*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
 
-        <!-- Geri Butonu -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
-            <Button Content="← Geri" FontSize="16" Width="100" Click="BackButton_Click" />
+            <Button Content="← Geri" FontSize="22" Width="100" Click="BackButton_Click" />
+            <TextBlock Text="{Binding TestName}" FontSize="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="1790"/>
         </StackPanel>
 
-        <!-- Test Parameters -->
-        <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Left" Margin="10,20,0,20">
-            <TextBlock Text="Test Parameters:" FontWeight="Bold" FontSize="20" Margin="10"/>
-            <TextBlock Name="TestDescription" FontSize="16" TextWrapping="Wrap"/>
-
-            <!-- Input Display -->
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBlock Text="Force (N):" FontSize="16" Margin="0,0,5,0"/>
-                <TextBlock Name="ForceInputValue" FontSize="16" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBlock Text="Speed (mm/s):" FontSize="16" Margin="0,0,5,0"/>
-                <TextBlock Name="SpeedInputValue" FontSize="16" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBlock Text="Flexion Angle:" FontSize="16" Margin="0,0,5,0"/>
-                <TextBlock Name="FlexionInputValue" FontSize="16" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBlock Text="Torsional Load (N.m):" FontSize="16" Margin="0,0,5,0"/>
-                <TextBlock Name="TorsionalLoadValue" FontSize="16" />
-            </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top">
+            <!-- Grafik Alanı -->
+            <lvc:CartesianChart Grid.Row="0" 
+                                Series="{Binding ChartSeries}" 
+                                XAxes="{Binding XAxes}" 
+                                YAxes="{Binding YAxes}" 
+                                LegendPosition="Bottom"
+                                Background="Transparent">
+                <!-- Şeffaf arka plan -->
+            </lvc:CartesianChart>
         </StackPanel>
 
-        <!-- Chart Area -->
-        <GroupBox Header="Test Monitoring - Force vs Time" Margin="189,20,20,20" Grid.Row="1">
-            <lvc:CartesianChart x:Name="TestChart" Series="{Binding Series}" LegendPosition="Right" />
-        </GroupBox>
 
-        <!-- Real-Time Data Display -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="2">
-            <TextBlock Text="Force (N):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0"/>
-            <TextBlock Name="ForceValue" Text="0" FontSize="16" Margin="0,0,30,0"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+            <!-- Real-Time Data Display -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="1">
+                <TextBlock Text="Force (N):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Force}" FontSize="18" Margin="0,0,30,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
 
-            <TextBlock Text="Displacement (mm):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0"/>
-            <TextBlock Name="DisplacementValue" Text="0" FontSize="16" Margin="0,0,30,0"/>
+                <TextBlock Text="Displacement (mm):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Displacement}" FontSize="18" Margin="0,0,30,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
 
-            <Button Content="Stop Test" Width="100" Height="30" Click="StopTestButton_Click" />
+                <Button Content="Stop Test" Width="100" Height="30" Click="StopTestButton_Click" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>

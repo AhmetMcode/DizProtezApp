@@ -10,7 +10,7 @@ namespace DizProtezApp
     {
         public IServiceProvider? ServiceProvider { get; private set; }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
@@ -20,21 +20,26 @@ namespace DizProtezApp
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
 
+            // ServiceManager'i başlat
+            var serviceManager = ServiceProvider.GetRequiredService<ServiceManager>();
+            await serviceManager.InitializeServices();
+
             // MainWindow'u başlatın
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
+
 
         private void ConfigureServices(IServiceCollection services)
         {
             // DbContext yapılandırması
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer("Server=.\\;Database=DizProtezDB;Trusted_Connection=True;TrustServerCertificate=true;"));
-            
+
             // Servisleri ekleyin
             services.AddSingleton<PlcService>();
-            services.AddTransient<SqlService>();
-            services.AddTransient<ServiceManager>();
+            services.AddSingleton<SqlService>();
+            services.AddSingleton<ServiceManager>();
 
             // MainWindow'u servis olarak ekleyin
             services.AddTransient<MainWindow>();

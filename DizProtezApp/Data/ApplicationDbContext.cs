@@ -11,6 +11,8 @@ namespace DizProtezApp.Data
         }
 
         // DbSet tanımlamaları
+        public DbSet<TestRecord> TestRecords { get; set; }
+        public DbSet<Specimen> Specimens { get; set; }
         public DbSet<PlcData> PlcData { get; set; }
     }
 }

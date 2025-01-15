@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DizProtezApp.Models
 {
     public class PlcData
     {
-        public int Id { get; set; }
-        public string DataKey { get; set; }
-        public string DataValue { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public int Id { get; set; } // Primary Key
+        public DateTime Timestamp { get; set; } // Veri okuma zamanı
+        public int Displacement { get; set; } // X ekseni (Servo pozisyonu)
+        public double Force { get; set; } // Y ekseni (Kuvvet)
+
+        // Specimen ile ilişki
+        public int SpecimenId { get; set; } // Foreign Key
+        public Specimen Specimen { get; set; } // Specimen ile navigation property
     }
 }

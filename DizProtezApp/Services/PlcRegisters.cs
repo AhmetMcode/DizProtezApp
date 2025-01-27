@@ -71,18 +71,19 @@ namespace DizProtezApp.Services
                 public static readonly ushort S2_TEST_GERI_POZ = 20224; // TEST S2 GERİ POZİSYONU
                 public static readonly ushort S2_TEST_ILERI_HIZ = 20226; // TEST S2 İLERİ GİDERKEN Kİ HIZ
                 public static readonly ushort S2_TEST_GERI_HIZ = 20228; // TEST S2 GERİ GİDERKEN Kİ HIZ
-            // TEST SERVO 2
+            // TEST SERVO 3
                 public static readonly ushort S3_TEST_ILERI_POZ = 20322; // TEST S3 İLERİ POZİSYONU
                 public static readonly ushort S3_TEST_GERI_POZ = 20324; // TEST S3 GERİ POZİSYONU
                 public static readonly ushort S3_TEST_ILERI_HIZ = 20326; // TEST S3 İLERİ GİDERKEN Kİ HIZ
                 public static readonly ushort S3_TEST_GERI_HIZ = 20328; // TEST S3 GERİ GİDERKEN Kİ HIZ
             // Loadcell 1
-                public static readonly ushort LOADCELL_1_DWORD = 20414; // servo 1 i ölçen loadcell veri 1
+                public static readonly ushort LOADCELL_1_DWORD = 20414; // servo 1 i ölçen loadcell veri 1 YUKARDAKİ
+        public static readonly ushort LOADCELL_2_DWORD = 20424; // servo 1 i ölçen loadcell veri 1 AŞŞAĞIDAKİ
 
         // REAL Adresleri
 
-            // TEST Loadcell 1
-                public static readonly ushort L1_TEST_POZ_LIMIT = 20134; // TEST  L1 POZITIF YÜK LİMİTİ
+        // TEST Loadcell 1
+        public static readonly ushort L1_TEST_POZ_LIMIT = 20134; // TEST  L1 POZITIF YÜK LİMİTİ
                 public static readonly ushort L1_TEST_NEG_LIMIT = 20136; // TEST  L1 NEGATİF YÜK LİMİTİ
             // TEST Loadcell 2
                 public static readonly ushort L2_TEST_POZ_LIMIT = 20134; // TEST  L2 POZITIF YÜK LİMİTİ

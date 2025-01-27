@@ -1,4 +1,5 @@
 ﻿using DizProtezApp.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -20,7 +21,8 @@ namespace DizProtezApp
         public ControlPanelPage()
         {
             InitializeComponent();
-            _plcService = new PlcService();
+            // App sınıfından PlcService'i alın
+            _plcService = ((App)Application.Current).ServiceProvider.GetRequiredService<PlcService>();
             ViewModel = new ServoViewModel();
 
 

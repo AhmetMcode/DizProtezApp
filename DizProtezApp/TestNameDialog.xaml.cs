@@ -67,7 +67,7 @@ namespace DizProtezApp
         {
             switch (testName)
             {
-                case "ASTM F1223 Anterior-Posterior (A-P) Test":
+                case "ASTM F1223 (A-P) (static) Anterior-Posterior":
                     return new Dictionary<string, string>
             {
                 { "Flexion (°)", "0" },
@@ -76,7 +76,16 @@ namespace DizProtezApp
                 { "Displacement Negative", "-20" },
                 { "Displacement Positive", "20" }
             };
-                case "ASTM F1223 Medial-Lateral (M-L) Test":
+                case "ASTM F2723 (A-P) (dynamic) Anterior-Posterior":
+                    return new Dictionary<string, string>
+            {
+                { "Flexion (°)", "0" },
+                { "Force (N)", "710" },
+                { "Speed (mm/s)", "1.5" },
+                { "Displacement Negative", "-20" },
+                { "Displacement Positive", "20" }
+            };
+                case "ASTM F1223 (M-L) (static) Medial-Lateral":
                     return new Dictionary<string, string>
             {
                 { "Flexion (°)", "0" },
@@ -104,15 +113,7 @@ namespace DizProtezApp
                 { "Displacement Positive", "20" },
                 { "Cycle", "220000" }
             };
-                case "ASTM F2723 Mobile Knee Dislocation Resistance Test":
-                    return new Dictionary<string, string>
-            {
-                { "Flexion (°)", "0" },
-                { "Force (N)", "710" },
-                { "Speed (mm/s)", "1.5" },
-                { "Displacement Negative", "-20" },
-                { "Displacement Positive", "20" }
-            };
+
 
                 case "ASTM F2777 High-Flexion Durability and Deformation":
                     return new Dictionary<string, string>
@@ -158,6 +159,12 @@ namespace DizProtezApp
             }
         }
 
+        private bool IsDynamicTestId(int testId)
+        {
+            var dynamicTestIds = new List<int> { 2, 4 }; // Dinamik testlerin testId değerleri
+            return dynamicTestIds.Contains(testId);
+        }
+
 
         private async void OkButton_Click(object sender, RoutedEventArgs e)
         {
@@ -185,8 +192,16 @@ namespace DizProtezApp
                 await SaveTestToDatabase();
 
                 // TestMonitoringPage'e yönlendir
+                // testId'ye göre yönlendirme
                 var mainWindow = (MainWindow)Application.Current.MainWindow;
-                mainWindow.MainFrame.Navigate(new TestMonitoringPage(_sqlService, _plcService, TestName));
+                if (IsDynamicTestId(_testId))
+                {
+                    mainWindow.MainFrame.Navigate(new DynamicTestMonitoringPage(_sqlService, _plcService, TestName));
+                }
+                else
+                {
+                    mainWindow.MainFrame.Navigate(new TestMonitoringPage(_sqlService, _plcService, TestName));
+                }
 
             }
             catch (Exception ex)

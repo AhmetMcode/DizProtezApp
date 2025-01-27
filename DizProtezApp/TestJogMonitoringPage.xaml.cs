@@ -32,10 +32,24 @@ namespace DizProtezApp
             // Test adını başlıkta göster
             TestNameTextBlock1.Text = $"Selected Test: {_testName}";
 
-            _plcService = new PlcService();
+            // App sınıfından PlcService'i alın
+            _plcService = ((App)Application.Current).ServiceProvider.GetRequiredService<PlcService>();
             _viewModel = new TestJogMonitoringViewModel();
             DataContext = _viewModel;
 
+            if (!_plcService.IsConnected)
+            {
+                MessageBox.Show("PLC bağlantısı yok. İşlem gerçekleştirilemiyor.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            try
+            {
+                _plcService.WriteBool(PlcRegisters.S1_Start_INITC, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Hata: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             InitializeTimer();
         }
@@ -44,7 +58,7 @@ namespace DizProtezApp
         {
             _dataUpdateTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(10)
+                Interval = TimeSpan.FromMilliseconds(100)
             };
             _dataUpdateTimer.Tick += (s, e) =>
             {
@@ -84,16 +98,20 @@ namespace DizProtezApp
                     BindingExpression binding = textBox.GetBindingExpression(TextBox.TextProperty);
                     binding?.UpdateSource();
 
-                    if (textBox.Name == "Servo1BackJogSpeed1")
+                    if (textBox.Name == "Servo1JogSpeed")
                     {
-                        int reverseSpeedValue = (int)(_viewModel.Servo1ReverseJogSpeed * 10); // Ölçeklendirme
+                        // Mutlak değeri alıp 10 ile çarparak ölçeklendirme
+                        int speedValue = (int)(Math.Abs(_viewModel.Servo1JogSpeedBind) * 10);
+
+                        // Reverse için negatif, Forward için pozitif değerler
+                        int reverseSpeedValue = -speedValue;
+                        int forwardSpeedValue = speedValue;
+
+                        // PLC'ye yazma işlemleri
                         _plcService.WriteDWord(PlcRegisters.S1_REV_Speed, reverseSpeedValue);
-                    }
-                    else if (textBox.Name == "Servo1ForwardJogSpeed1")
-                    {
-                        int forwardSpeedValue = (int)(_viewModel.Servo1ForwardJogSpeed * 10); // Ölçeklendirme
                         _plcService.WriteDWord(PlcRegisters.S1_FWD_Speed, forwardSpeedValue);
                     }
+
                     else if (textBox.Name == "VerticalForceInput1")
                     {
                         // Acc işlemleri
@@ -116,8 +134,27 @@ namespace DizProtezApp
 
             try
             {
-                _viewModel.Servo1ForwardJogSpeed = _plcService.ReadDWord(PlcRegisters.S1_FWD_Speed) / 10.0;
-                _viewModel.Servo1ReverseJogSpeed = _plcService.ReadDWord(PlcRegisters.S1_REV_Speed) / 10.0;
+                // PLC'den değerleri oku ve mutlak değerlerini al
+                // PLC'den ham değerleri oku (negatif/pozitif korunarak)
+                double originalForward = _plcService.ReadDWord(PlcRegisters.S1_FWD_Speed) / 10.0;
+                double originalReverse = _plcService.ReadDWord(PlcRegisters.S1_REV_Speed) / 10.0;
+                // Mutlak değerleri al
+                double absForward = Math.Abs(originalForward);
+                double absReverse = Math.Abs(originalReverse);
+                // Değerleri karşılaştır ve uygun formatı seç
+                if (absForward == absReverse)
+                {
+                    // Değerler eşitse sadece sayıyı göster
+                    _viewModel.Servo1JogSpeedBind = absForward;
+                }
+                else
+                {
+                    // Hangi yönde daha büyük olduğunu kontrol et
+                    string sign = originalForward > -originalReverse ? "+" : "-";
+                    _viewModel.Servo1JogSpeedBind = double.Parse($"{sign}{Math.Max(absForward, absReverse)}");
+                }
+
+                _viewModel.Servo1CurrentPosition = _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz) / 1000.0;
             }
             catch (Exception ex)
             {
@@ -136,12 +173,25 @@ namespace DizProtezApp
                 await Task.Run(() =>
                 {
                     int displacement = _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz);
-                    float gramValue = _plcService.ReadReal(PlcRegisters.LOADCELL_1_DWORD);
-                    double force = (gramValue / 1000.0) * 9.80665;
+
+                    ////-----------üstteki loadceliin doğru newton hali
+                    //float LCUSTkgValue = _plcService.ReadDWord(PlcRegisters.LOADCELL_1_DWORD) / 25;
+                    //double force = LCUSTkgValue * 9.80665;
+                    ////-----------
+                    ///
+                    float LCUSTkgValue = _plcService.ReadDWord(PlcRegisters.LOADCELL_1_DWORD) / 25;
+
+
+                    //-----------alttaki loadceliin doğru newton hali
+                    float LCALTkgValue = _plcService.ReadDWord(PlcRegisters.LOADCELL_2_DWORD) / 1000;
+                    double force = LCALTkgValue * 9.80665;
+                    //-----------
+
+                    Console.WriteLine($"LC ÜST  {LCUSTkgValue} ------ LC ALT  {LCUSTkgValue}");
 
                     // ViewModel değerlerini güncelle
                     _viewModel.Displacement1 = displacement;
-                    _viewModel.Force1 = Math.Round(force, 3);
+                    _viewModel.Force1 = force;
                 });
             }
             catch (Exception ex)
@@ -150,8 +200,30 @@ namespace DizProtezApp
             }
         }
 
+        private void UpdateButtonState(Button button, bool isActive, string activeContent, string inactiveContent, Color activeColor, Color inactiveColor)
+        {
+            if (button == null) return;
 
+            button.Content = isActive ? activeContent : inactiveContent;
+            button.Background = new SolidColorBrush(isActive ? activeColor : inactiveColor);
+        }
+        private void GoHomeServo1_Button(object sender, RoutedEventArgs e)
+        {
+            if (!_plcService.IsConnected)
+            {
+                MessageBox.Show("PLC bağlantısı yok. İşlem gerçekleştirilemiyor.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            try
+            {
+                _plcService.WriteBool(PlcRegisters.s1_zrnc_Start, true);
 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Home gönderme işleminde hata: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
         private async void GeriJog_MouseDown1(object sender, RoutedEventArgs e)
         {
@@ -226,8 +298,6 @@ namespace DizProtezApp
                 }
             }
         }
-
-
 
     }
 }

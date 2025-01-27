@@ -88,11 +88,15 @@ namespace DizProtezApp
 
             switch (testName)
             {
-                case "ASTM F1223 Anterior-Posterior (A-P) Test":
+                case "ASTM F1223 (A-P) (static) Anterior-Posterior":
                     TestDescription.Text = "This test measures the anterior-posterior displacement limits.";
                     break;
 
-                case "ASTM F1223 Medial-Lateral (M-L) Test":
+                case "ASTM F2723 (A-P) (dynamic) Anterior-Posterior":
+                    TestDescription.Text = "This test evaluates dynamic separation resistance of the mobile knee tibial baseplate.";
+                    break;
+
+                case "ASTM F1223 (M-L) (static) Medial-Lateral":
                     TestDescription.Text = "This test measures the medial-lateral displacement limits.";
                     break;
 
@@ -104,9 +108,6 @@ namespace DizProtezApp
                     TestDescription.Text = "This test evaluates rotational stops of the tibial baseplate.";
                     break;
 
-                case "ASTM F2723 Mobile Knee Dislocation Resistance Test":
-                    TestDescription.Text = "This test evaluates dynamic separation resistance of the mobile knee tibial baseplate.";
-                    break;
 
                 case "ASTM F2777 High-Flexion Durability and Deformation":
                     TestDescription.Text = "This test measures high-flexion durability and deformation.";

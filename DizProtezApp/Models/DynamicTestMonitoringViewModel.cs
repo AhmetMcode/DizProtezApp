@@ -6,16 +6,19 @@ using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace DizProtezApp
+namespace DizProtezApp.Models
 {
-    public class TestMonitoringViewModel : INotifyPropertyChanged
+    public class DynamicTestMonitoringViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<ISeries> ChartSeries { get; set; }
         public ObservableCollection<Axis> XAxes { get; set; }
         public ObservableCollection<Axis> YAxes { get; set; }
 
+        private double _time;
         private double _force;
+        private double _displacement;
         private string _testName;
+
 
         public string TestName
         {
@@ -27,6 +30,16 @@ namespace DizProtezApp
             }
         }
 
+        public double Time
+        {
+            get => _time;
+            set
+            {
+                _time = value;
+                OnPropertyChanged(nameof(Time));
+            }
+        }
+
         public double Force
         {
             get => _force;
@@ -34,11 +47,10 @@ namespace DizProtezApp
             {
                 _force = value;
                 OnPropertyChanged(nameof(Force));
-                AddDataPoint(); // Yeni veri noktası ekle
+                AddDataPoint();
             }
         }
 
-        private double _displacement;
         public double Displacement
         {
             get => _displacement;
@@ -46,10 +58,11 @@ namespace DizProtezApp
             {
                 _displacement = value;
                 OnPropertyChanged(nameof(Displacement));
+                AddDataPoint();
             }
         }
 
-        public TestMonitoringViewModel()
+        public DynamicTestMonitoringViewModel()
         {
             // Veri serisi
             ChartSeries = new ObservableCollection<ISeries>
@@ -83,9 +96,10 @@ namespace DizProtezApp
             {
                 new Axis
                 {
-                    Name = "Displacement (mm)",
-                    ShowSeparatorLines = true, // Izgara çizgileri
-                    SeparatorsPaint = new SolidColorPaint(SKColors.Gray) // Izgara çizgi rengi
+                    Name = "Time (s)",
+                    MinStep = 1,
+                    Labeler = value => $"{value:F1} s",
+                    SeparatorsPaint = new SolidColorPaint(SKColors.Gray)
                 }
             };
 
@@ -95,25 +109,31 @@ namespace DizProtezApp
                 new Axis
                 {
                     Name = "Force (N)",
-                    ShowSeparatorLines = true, // Izgara çizgileri
-                    SeparatorsPaint = new SolidColorPaint(SKColors.Gray) // Izgara çizgi rengi
+                    Labeler = value => $"{value:F1} N",
+                    SeparatorsPaint = new SolidColorPaint(SKColors.Gray)
+                },
+                new Axis
+                {
+                    Name = "Displacement (mm)",
+                    Labeler = value => $"{value:F1} mm",
+                    SeparatorsPaint = new SolidColorPaint(SKColors.Gray),
+                    Position = LiveChartsCore.Measure.AxisPosition.End
                 }
             };
         }
 
-        // X ve Y verilerini içeren yeni bir veri noktası ekleme
         private void AddDataPoint()
         {
-            if (ChartSeries[0] is LineSeries<ObservablePoint> lineSeries && lineSeries.Values is ObservableCollection<ObservablePoint> values)
+            if (ChartSeries[0] is LineSeries<ObservablePoint> forceSeries && forceSeries.Values is ObservableCollection<ObservablePoint> forceValues)
             {
-                values.Add(new ObservablePoint(Displacement, Force));
+                forceValues.Add(new ObservablePoint(Time, Force));
+            }
 
-                // Maksimum 500 veri noktasıyla sınırlayın (örnek)
-                if (values.Count > 500)
-                    values.RemoveAt(0);
+            if (ChartSeries[1] is LineSeries<ObservablePoint> displacementSeries && displacementSeries.Values is ObservableCollection<ObservablePoint> displacementValues)
+            {
+                displacementValues.Add(new ObservablePoint(Time, Displacement));
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)

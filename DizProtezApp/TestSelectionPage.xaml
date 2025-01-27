@@ -19,13 +19,14 @@
             <StackPanel>
                 <TextBlock FontSize="38" FontWeight="Bold" Text="Select a Test Type" Margin="0,0,0,20" Foreground="#333"/>
                 <ListBox x:Name="TestList" FontSize="28" SelectionChanged="TestList_SelectionChanged" Background="#f7f7f7" BorderBrush="#dddddd" Foreground="#444">
-                    <ListBoxItem Content="ASTM F1223 Anterior-Posterior (A-P) Test" Tag="1" />
-                    <ListBoxItem Content="ASTM F1223 Medial-Lateral (M-L) Test" Tag="2" />
-                    <ListBoxItem Content="ASTM F1223 Internal-External Rotation Test" Tag="3" />
-                    <ListBoxItem Content="ASTM F2722 Rotational Stops of Tibial Baseplate" Tag="4" />
-                    <ListBoxItem Content="ASTM F2723 Mobile Knee Dislocation Resistance Test" Tag="5" />
-                    <ListBoxItem Content="ASTM F2777 High-Flexion Durability and Deformation" Tag="6" />
-                    <ListBoxItem Content="ASTM F2724 Mobile Knee Dislocation Test" Tag="7" />
+                    <ListBoxItem Content="ASTM F1223 (A-P) (static) Anterior-Posterior" Tag="1" />
+                    <ListBoxItem Content="ASTM F2723 (A-P) (dynamic) Anterior-Posterior" Tag="2" />
+                    <ListBoxItem Content="ASTM F1223 (M-L) (static) Medial-Lateral" Tag="3" />
+                    <ListBoxItem Content="ASTM F2723 (M-L) (dynamic) Medial-Lateral" Tag="4" />
+                    <ListBoxItem Content="ASTM F1223 Internal-External Rotation Test" Tag="5" />
+                    <ListBoxItem Content="ASTM F2722 Rotational Stops of Tibial Baseplate" Tag="6" />
+                    <ListBoxItem Content="ASTM F2777 High-Flexion Durability and Deformation" Tag="7" />
+                    <ListBoxItem Content="ASTM F2724 Mobile Knee Dislocation Test" Tag="8" />
                 </ListBox>
 
                 <Button Content="PLC Control Panel" 

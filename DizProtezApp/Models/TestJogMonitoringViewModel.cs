@@ -11,9 +11,9 @@ namespace DizProtezApp
 {
     public class TestJogMonitoringViewModel : INotifyPropertyChanged
     {
-        private double _servo1ForwardJogSpeed;
-        private double _servo1ReverseJogSpeed;
+        private double _servo1JogSpeed;
         private double _verticalForceInput1;
+        private double _servo1CurrentPosition;
 
         public ObservableCollection<ISeries> ChartSeries { get; set; }
         public ObservableCollection<Axis> XAxes { get; set; }
@@ -51,8 +51,11 @@ namespace DizProtezApp
                 {
                     Values = new ObservableCollection<ObservablePoint>(),
                     Fill = null,
-                    LineSmoothness = 0.5,
-                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
+                    LineSmoothness = 0,
+                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 6 },
+
+                    // Nokta işaretleyicilerini kaldır
+                    GeometrySize = 0,
 
                     // X ekseni (Displacement) için Tooltip formatı
                     XToolTipLabelFormatter = point =>
@@ -64,9 +67,6 @@ namespace DizProtezApp
                 }
             };
 
-
-
-   
 
             // X Ekseni
             XAxes = new ObservableCollection<Axis>
@@ -98,28 +98,19 @@ namespace DizProtezApp
             {
                 values.Add(new ObservablePoint(Displacement1, Force1));
 
-                // Maksimum 500 veri noktasıyla sınırlayın (örnek)
-                if (values.Count > 500)
-                    values.RemoveAt(0);
+                //// Maksimum 500 veri noktasıyla sınırlayın (örnek)
+                //if (values.Count > 200)
+                //    values.RemoveAt(0);
             }
         }
 
-        public double Servo1ForwardJogSpeed
-        {
-            get => _servo1ForwardJogSpeed;
-            set
-            {
-                _servo1ForwardJogSpeed = value;
-                OnPropertyChanged();
-            }
-        }
 
-        public double Servo1ReverseJogSpeed
+        public double Servo1JogSpeedBind
         {
-            get => _servo1ReverseJogSpeed;
+            get => _servo1JogSpeed;
             set
             {
-                _servo1ReverseJogSpeed = value;
+                _servo1JogSpeed = value;
                 OnPropertyChanged();
             }
         }
@@ -134,6 +125,15 @@ namespace DizProtezApp
             }
         }
 
+        public double Servo1CurrentPosition
+        {
+            get => _servo1CurrentPosition;
+            set
+            {
+                _servo1CurrentPosition = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

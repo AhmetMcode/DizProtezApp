@@ -1,23 +1,24 @@
-﻿using LiveChartsCore.SkiaSharpView;
-using System.Windows;
-using System.Windows.Threading;
-using System.Windows.Controls;
+﻿using DizProtezApp.Models;
 using DizProtezApp.Services;
-using System.Diagnostics;
-using DizProtezApp.Models;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace DizProtezApp
 {
-    public partial class TestMonitoringPage : Page
+    public partial class DynamicTestMonitoringPage : Page
     {
-        private TestMonitoringViewModel _viewModel;
-        private DispatcherTimer _dataUpdateTimer;
+        private readonly DynamicTestMonitoringViewModel _viewModel;
+        private readonly DispatcherTimer _dataUpdateTimer;
+        private double _time;
         private readonly PlcService _plcService;
         private readonly SqlService _sqlService;
         private DispatcherTimer _bufferFlushTimer;
+        
 
-        public TestMonitoringPage(SqlService sqlService, PlcService plcService, string testName)
+        public DynamicTestMonitoringPage(SqlService sqlService, PlcService plcService, string testName)
         {
             InitializeComponent();
 
@@ -26,15 +27,11 @@ namespace DizProtezApp
             // App sınıfından PlcService'i alın
             _plcService = ((App)Application.Current).ServiceProvider.GetRequiredService<PlcService>();
 
-            _viewModel = new TestMonitoringViewModel
-            {
-                TestName = testName // Test adını ViewModel'e aktar
-            };
+            _viewModel = new DynamicTestMonitoringViewModel { TestName = testName };
             DataContext = _viewModel;
 
-       
             InitializeBufferFlushTimer();
-            // Gerçek zamanlı veri okuma
+            // Zamanlı veri güncellemeleri için timer
             _dataUpdateTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(100)

@@ -87,7 +87,7 @@ namespace DizProtezApp
                     {
                         Timestamp = DateTime.UtcNow,
                         Displacement = displacement,
-                        Force = Math.Round(forceAxialN, 3),
+                        ForceAxialN = Math.Round(forceAxialN, 3),
                         SpecimenId = 1
                     };
                     _sqlService.AddToBuffer(plcData);

@@ -134,7 +134,7 @@ namespace DizProtezApp.Models
                     MinStep = 1,
                     Labeler = value => $"{value / 3600:F1} h", // Saniyeyi saate çevirerek etiketler
                     SeparatorsPaint = new SolidColorPaint(SKColors.Gray),
-                    ShowSeparatorLines = true,
+                    ShowSeparatorLines = false,
                     MinLimit = 0,         // Sol sınır 0
             MaxLimit = 79200      // Sağ sınır 22 saat = 79200 saniye
                 }
@@ -148,7 +148,7 @@ namespace DizProtezApp.Models
                     Name = "Force (N)",
                     Labeler = value => $"{value:F1} N",
                     SeparatorsPaint = new SolidColorPaint(SKColors.Gray),
-                    ShowSeparatorLines = true,
+                    ShowSeparatorLines = false,
                 },
                 new Axis
                 {

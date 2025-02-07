@@ -3,37 +3,49 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:scott="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+      xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       mc:Ignorable="d" 
       d:DesignHeight="1080" d:DesignWidth="1920"
       Title="DynamicTestMonitoringPage">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="7*"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="100*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
 
-        <!-- Üst Panel: Butonlar ve Test Adı -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10" Width="1900">
-            <Button Content="← Geri" FontSize="22" Width="100" Click="BackButton_Click"/>
-            <TextBlock Text="{Binding TestName}" FontSize="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="1645"/>
-            <Button Content="Reset Zoom/Pan" Width="120" Height="25" Click="ResetZoomButton_Click"/>
+            <Button Content="← Geri" FontSize="22" Width="100" Click="BackButton_Click" />
+            <TextBlock Text="{Binding TestName}" FontSize="24" Margin="10,0,0,0" VerticalAlignment="Center" Width="1645" />
+
+            <Button Content="Reset Zoom/Pan" 
+            Width="120" 
+            Height="25" 
+            Click="ResetZoomButton_Click"/>
+
         </StackPanel>
 
-        <!-- Orta Panel: ScottPlot Kontrolü -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10">
-            <scott:WpfPlot x:Name="wpfPlot" Height="850" Width="1895"/>
+            <!-- Grafik Alanı -->
+            <lvc:CartesianChart 
+                Series="{Binding ChartSeries}" 
+                XAxes="{Binding XAxes}" 
+                YAxes="{Binding YAxes}" 
+                ZoomMode="Both"
+                Background="Transparent"
+                LegendPosition="Bottom" 
+                Height="850" Width="1895"/>
         </StackPanel>
 
-        <!-- Alt Panel: Bilgi ve Durdurma Butonu -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <TextBlock Text="A-P Loadcell Measured Force (N):" FontWeight="Bold" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBlock Text="A-P Loadcell Measured Force (N):" FontWeight="Bold" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <TextBlock Text="{Binding Force1, StringFormat=F3}" FontSize="22" Margin="0,0,30,0" VerticalAlignment="Center" FontWeight="Bold" Width="100"/>
-            <TextBlock Text="Displacement (mm):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding Displacement}" FontSize="18" Margin="0,0,30,0" VerticalAlignment="Center" FontWeight="Bold"/>
-            <Button Content="Stop Test" Width="100" Height="30" Click="StopTestButton_Click"/>
+
+            <TextBlock Text="Displacement (mm):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" />
+            <TextBlock Text="{Binding Displacement}" FontSize="18" Margin="0,0,30,0" VerticalAlignment="Center" FontWeight="Bold" />
+
+            <Button Content="Stop Test" Width="100" Height="30" Click="StopTestButton_Click" />
         </StackPanel>
     </Grid>
 </Page>

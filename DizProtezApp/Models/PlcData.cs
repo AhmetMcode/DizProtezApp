@@ -6,8 +6,9 @@ namespace DizProtezApp.Models
     {
         public int Id { get; set; } // Primary Key
         public DateTime Timestamp { get; set; } // Veri okuma zamanı
-        public int Displacement { get; set; } // X ekseni (Servo pozisyonu)
-        public double Force { get; set; } // Y ekseni (Kuvvet)
+        public double ForceAxialN { get; set; }
+        public double ForceFemoralN { get; set; }
+        public int Displacement { get; set; }
 
         // Specimen ile ilişki
         public int SpecimenId { get; set; } // Foreign Key

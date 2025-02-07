@@ -8,7 +8,7 @@ namespace DizProtezApp.Data
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer("Server=104.247.167.18\\MSSQLSERVER2019;Database=gurumeng_dizprotez;user id=gurumeng_dizprotez;password=Wert789.;TrustServerCertificate=true;");
+            optionsBuilder.UseSqlServer("Server=.\\;Database=DizProtezDB;Trusted_Connection=True;TrustServerCertificate=true;");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

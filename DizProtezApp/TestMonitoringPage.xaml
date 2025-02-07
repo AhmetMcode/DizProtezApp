@@ -27,7 +27,8 @@
                                 XAxes="{Binding XAxes}" 
                                 YAxes="{Binding YAxes}" 
                                 LegendPosition="Bottom"
-                                Background="Transparent">
+                                Background="Transparent" Height="850
+                                " Width="1895">
                 <!-- Şeffaf arka plan -->
             </lvc:CartesianChart>
         </StackPanel>
@@ -36,8 +37,8 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <!-- Real-Time Data Display -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="1">
-                <TextBlock Text="Force (N):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock Text="{Binding Force}" FontSize="18" Margin="0,0,30,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="A-P Loadcell Measured Force (N):" FontWeight="Bold" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Force1, StringFormat=F3}" FontSize="22" Margin="0,0,30,0" VerticalAlignment="Center" FontWeight="Bold" Width="100"/>
 
                 <TextBlock Text="Displacement (mm):" FontWeight="Bold" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding Displacement}" FontSize="18" Margin="0,0,30,0" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>

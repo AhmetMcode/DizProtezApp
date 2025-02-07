@@ -33,7 +33,10 @@ namespace DizProtezApp.Migrations
                     b.Property<int>("Displacement")
                         .HasColumnType("int");
 
-                    b.Property<double>("Force")
+                    b.Property<double>("ForceAxialN")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ForceFemoralN")
                         .HasColumnType("float");
 
                     b.Property<int>("SpecimenId")

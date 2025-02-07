@@ -32,7 +32,7 @@
                 <Button Content="PLC Control Panel" 
                     FontSize="24" Height="50"
                     Background="#FF0016CC" Foreground="White" BorderThickness="0" 
-                    Cursor="Hand" Click="OpenPLCControlPanel_Click" Width="240" Margin="0,45,0,0" FontFamily="Microsoft YaHei" FontWeight="Bold" VerticalAlignment="Bottom"/>
+                    Cursor="Hand" Click="OpenPLCControlPanel_Click" Width="240" FontFamily="Microsoft YaHei" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,5,0,0"/>
             </StackPanel>
         </Border>
 

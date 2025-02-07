@@ -34,7 +34,7 @@ namespace DizProtezApp
         {
             // DbContext yapılandırması
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer("Server=.\\;Database=DizProtezDB;Trusted_Connection=True;TrustServerCertificate=true;"));
+                options.UseSqlServer("Server=104.247.167.18\\MSSQLSERVER2019;Database=gurumeng_dizprotez;user id=gurumeng_dizprotez;password=Wert789.;TrustServerCertificate=true;"));
 
             // Servisleri ekleyin
             services.AddSingleton<PlcService>();

@@ -46,17 +46,11 @@
                             <TextBox x:Name="Servo1TargetPosition" Text="{Binding Servo1TargetPosition, Mode=TwoWay, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}" Width="100" FontSize="18" Margin="5"/>
                             <Button x:Name="GoPositionButton" Content="Git" FontSize="18" Width="100" Click="GoPosition_Servo1_Button" Margin="5" Background="Green" Foreground="White"/>
 
-
-                            <TextBox x:Name="deneme" 
-         Text="{Binding deneme, Mode=TwoWay, StringFormat=F3}" 
-         FontSize="18" 
-         Background="Orange" 
-         Foreground="White" 
-         TextAlignment="Center" 
-         Width="159" 
-         HorizontalAlignment="Left"
-         GotFocus="TextBox_GotFocus"
-         LostFocus="TextBox_LostFocus" />
+                            <TextBox x:Name="altkgset" 
+Text="{Binding altkgset, Mode=TwoWay, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
+Width="100" FontSize="18" 
+Margin="5"                                                                    GotFocus="TextBox_GotFocus"
+LostFocus="TextBox_LostFocus"/>
 
                         </StackPanel>
 
@@ -72,7 +66,13 @@
                                      GotFocus="TextBox_GotFocus"
                                      LostFocus="TextBox_LostFocus" />
 
+                            <TextBox x:Name="lc1" Text="{Binding lc1, Mode=OneWay, StringFormat=F3}" FontSize="18" IsReadOnly="True" Background="Orange" Foreground="White" TextAlignment="Center" Width="159" HorizontalAlignment="Left"/>
 
+                            <TextBox x:Name="kgset" 
+         Text="{Binding kgset, Mode=TwoWay, StringFormat=F3, UpdateSourceTrigger=PropertyChanged}"
+         Width="100" FontSize="18" 
+         Margin="5"                                                                    GotFocus="TextBox_GotFocus"
+         LostFocus="TextBox_LostFocus"/>
                         </StackPanel>
 
 

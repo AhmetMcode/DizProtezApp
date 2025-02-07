@@ -5,18 +5,29 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Diagnostics;
+
+using System.Collections.Concurrent;
+using System.Timers;
 
 namespace DizProtezApp
 {
     public partial class DynamicTestMonitoringPage : Page
     {
+        // PLC okunan verileri depolayacağımız thread-safe kuyruk
+        private ConcurrentQueue<PlcData> _plcDataQueue = new ConcurrentQueue<PlcData>();
+
+        // PLC okuma timer (arka plan)
+        private System.Timers.Timer _plcReadingTimer;
+
         private readonly DynamicTestMonitoringViewModel _viewModel;
         private readonly DispatcherTimer _dataUpdateTimer;
         private double _time;
         private readonly PlcService _plcService;
         private readonly SqlService _sqlService;
-        private DispatcherTimer _bufferFlushTimer;
-        
+        // UI güncelleme timer
+        private DispatcherTimer _uiUpdateTimer;
+
 
         public DynamicTestMonitoringPage(SqlService sqlService, PlcService plcService, string testName)
         {
@@ -30,18 +41,17 @@ namespace DizProtezApp
             _viewModel = new DynamicTestMonitoringViewModel { TestName = testName };
             DataContext = _viewModel;
 
-            InitializeBufferFlushTimer();
-            // Zamanlı veri güncellemeleri için timer
-            _dataUpdateTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(100)
-            };
+            // 1) PLC OKUMA TIMER -> 100 ms aralıklarla veri oku, queue'ya at
+            _plcReadingTimer = new System.Timers.Timer(50); // 100 ms
+            _plcReadingTimer.Elapsed += PlcReadingTimer_Elapsed;
+            _plcReadingTimer.AutoReset = true; // her aralıkta tekrar çalışsın
+            _plcReadingTimer.Start();
 
-            _dataUpdateTimer.Tick += async (s, e) =>
-            {
-                await RefreshServo1PositionAndLoadcellAsync();
-            };
-            _dataUpdateTimer.Start();
+            // 2) UI GÜNCELLEME TIMER -> 500 ms'de bir, kuyruktan verileri al ve grafiğe ekle
+            _uiUpdateTimer = new DispatcherTimer();
+            _uiUpdateTimer.Interval = TimeSpan.FromMilliseconds(500);
+            _uiUpdateTimer.Tick += UiUpdateTimer_Tick;
+            _uiUpdateTimer.Start();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -56,55 +66,84 @@ namespace DizProtezApp
             }
         }
 
-        private async Task RefreshServo1PositionAndLoadcellAsync()
+        // =====================
+        //  PLC'den veri oku
+        // =====================
+        private async void PlcReadingTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            try
+            // Timer'ın kendi threadinde çalışır (UI thread'de değil)
+            // Burada UI erişimi YAPMAYIN, sadece PLC'den değerleri okuyun ve queue'ya ekleyin
+
+            if (_plcService.IsConnected)
             {
-                if (!_plcService.IsConnected)
+                try
                 {
-                    Console.WriteLine("PLC bağlantısı yok. Veriler güncellenmeyecek.");
-                    return;
+                    int displacement = await _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz);
+                    double forceKg = await _plcService.ReadDWord(PlcRegisters.LOADCELL_2_DWORD);
+                    double forceAxialN = forceKg * 9.81;
+
+                    double forceTopKg = (await _plcService.ReadDWord(PlcRegisters.LOADCELL_TOP_DWORD)) / 1000.0;
+                    double forceFemoralN = forceTopKg * 9.81;
+
+                    // PLC verisini oluştur
+                    var plcData = new PlcData
+                    {
+                        Timestamp = DateTime.UtcNow,
+                        Displacement = displacement,
+                        ForceAxialN = Math.Round(forceAxialN, 3),
+                        ForceFemoralN = Math.Round(forceFemoralN, 3)
+                    };
+
+                    // Kuyruğa ekle
+                    _plcDataQueue.Enqueue(plcData);
                 }
-
-                // Asenkron olarak PLC'den veri oku
-                int displacement = await Task.Run(() => _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz));
-                float gramValue = await Task.Run(() => _plcService.ReadReal(PlcRegisters.LOADCELL_1_DWORD));
-                double force = (gramValue / 1000.0) * 9.80665; // Gramı Newton'a çevir
-
-                // Yeni bir PlcData nesnesi oluştur
-                var plcData = new PlcData
+                catch (Exception ex)
                 {
-                    Timestamp = DateTime.UtcNow,
-                    Displacement = displacement,
-                    Force = Math.Round(force, 3),
-                    SpecimenId = 1
-                };
-
-                _sqlService.AddToBuffer(plcData);
-
-                // ViewModel güncelle
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    _viewModel.Displacement = displacement;
-                    _viewModel.Force = force;
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Veriler okunamadı: {ex.Message}");
+                    // Hata yönetimi
+                    Console.WriteLine($"PLC okunamadı: {ex.Message}");
+                }
             }
         }
 
-        private void InitializeBufferFlushTimer()
+        // =====================
+        //  UI'YI GÜNCELLE
+        // =====================
+        private void UiUpdateTimer_Tick(object sender, EventArgs e)
         {
-            _bufferFlushTimer = new DispatcherTimer
+            // Bu timer WPF'in UI thread'inde çalışır
+            // Kuyrukta bekleyen tüm verileri tek seferde çekip grafiği güncelleyelim
+            while (_plcDataQueue.TryDequeue(out PlcData data))
             {
-                Interval = TimeSpan.FromSeconds(10) // Her 10 saniyede bir yazım işlemi yapılır
-            };
+                // ViewModel içindeki grafiğe veri ekleme
+                // (Ham veriyi 100 ms'de topladık,
+                //  UI'ya 500 ms'de bir ekleniyor)
+                _viewModel.Time += 0.1; // örnek
+                _viewModel.Force1 = data.ForceAxialN;
+                _viewModel.Force2 = data.ForceFemoralN;
+                _viewModel.Displacement1 = data.Displacement;
 
-            _bufferFlushTimer.Tick += async (s, e) => await _sqlService.FlushDataBufferAsync();
-            _bufferFlushTimer.Start();
+                // Grafiğe veri noktası ekle
+                _viewModel.AddDataPoints();
+            }
         }
+
+        // Sayfa kapanırken Timer'ları durdurmayı unutmayın
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _plcReadingTimer?.Stop();
+            _plcReadingTimer?.Dispose();
+
+            _uiUpdateTimer?.Stop();
+        }
+
+        private void ResetZoomButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Otomatik ölçekleme (auto-scale) moduna geçmek için x ekseni limitlerini kaldırıyoruz.
+            _viewModel.XAxes[0].MinLimit = null;
+            _viewModel.XAxes[0].MaxLimit = null;
+        }
+
+
 
         private void StopTestButton_Click(object sender, RoutedEventArgs e)
         {

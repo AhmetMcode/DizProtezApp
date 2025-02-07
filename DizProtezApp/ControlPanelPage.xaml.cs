@@ -119,10 +119,15 @@ namespace DizProtezApp
                         int HomeSecondSpeed = (int)(ViewModel.Servo1HomeSecondSpeed * 10);
                         _plcService.WriteWord(PlcRegisters.S1_Second_Speed, HomeSecondSpeed);
                     }
-                    else if (textBox.Name == "deneme")
+                    else if (textBox.Name == "kgset")
                     {
-                        int ddeneme = (int)(ViewModel.deneme * 1000);
-                        _plcService.WriteDWord(PlcRegisters.DENEME, ddeneme);
+                        int kgsett = (int)(ViewModel.kgset * 1000);
+                        _plcService.WriteDWord(PlcRegisters.kgset, kgsett);
+                    }
+                    else if (textBox.Name == "altkgset")
+                    {
+                        int kgsett2 = (int)(ViewModel.altkgset * 1000);
+                        _plcService.WriteDWord(PlcRegisters.altkgset, kgsett2);
                     }
                 }
                 catch (Exception ex)
@@ -135,7 +140,7 @@ namespace DizProtezApp
 
 
 
-        private void RefreshServoData()
+        private async void RefreshServoData()
         {
             // Eğer PLC bağlantısı yoksa işlemi durdur
             if (!_plcService.IsConnected)
@@ -150,18 +155,21 @@ namespace DizProtezApp
                 if (!_isTextBoxFocused)
                 {
                     // TextBox ile ilgili değerlerin güncellenmesi
-                    ViewModel.Servo1ManualSpeed = _plcService.ReadDWord(PlcRegisters.S1_ManuelHız) / 10.0;
+                    ViewModel.Servo1ManualSpeed = (await _plcService.ReadDWord(PlcRegisters.S1_ManuelHız)) / 10.0;
                     ViewModel.Servo1Acc = _plcService.ReadWord(PlcRegisters.S1_Acc_time) / 10.0;
                     ViewModel.Servo1Dcc = _plcService.ReadWord(PlcRegisters.S1_Dec_time) / 10.0;
-                    ViewModel.Servo1ForwardJogSpeed = _plcService.ReadDWord(PlcRegisters.S1_FWD_Speed) / 10.0;
-                    ViewModel.Servo1ReverseJogSpeed = _plcService.ReadDWord(PlcRegisters.S1_REV_Speed) / 10.0;
+                    ViewModel.Servo1ForwardJogSpeed = (await _plcService.ReadDWord(PlcRegisters.S1_FWD_Speed)) / 10.0;
+                    ViewModel.Servo1ReverseJogSpeed = (await _plcService.ReadDWord(PlcRegisters.S1_REV_Speed)) / 10.0;
                     ViewModel.Servo1HomeFirstSpeed = _plcService.ReadWord(PlcRegisters.S1_First_Speed) / 10.0;
                     ViewModel.Servo1HomeSecondSpeed = _plcService.ReadWord(PlcRegisters.S1_Second_Speed) / 10.0;
-                    ViewModel.deneme = _plcService.ReadDWord(PlcRegisters.DENEME) / 1000.0;
+                    ViewModel.kgset = (await _plcService.ReadDWord(PlcRegisters.kgset)) / 1000.0;
+                    ViewModel.altkgset = (await _plcService.ReadDWord(PlcRegisters.altkgset)) / 1000.0;
                 }
 
                 // PLC'den pozisyon ve buton durumlarının okunması
-                ViewModel.Servo1CurrentPosition = _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz) / 1000.0;
+                ViewModel.Servo1CurrentPosition = (await _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz)) / 1000.0;
+
+                ViewModel.lc1 = (await _plcService.ReadDWord(PlcRegisters.LOADCELL_2_DWORD)) ;
 
                 // Buton durumlarını güncelle
                 bool isOtoManuelActive = _plcService.ReadBool(PlcRegisters.MAN_OTO_SEC_BIT);

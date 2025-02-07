@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Controls;
 
 namespace DizProtezApp.Services
 {
@@ -37,7 +38,9 @@ namespace DizProtezApp.Services
                 public static readonly (ushort RegisterAddress, byte BitIndex) TEST4_BASLA_DURDUR = (1150, 4); // TEST 4 BAŞLA DURDUR BUTONU
                 public static readonly (ushort RegisterAddress, byte BitIndex) TEST5_BASLA_DURDUR = (1150, 5); // TEST 5 BAŞLA DURDUR BUTONU
 
+
         // WORD Adresleri
+
             // Servo 1
                 public static readonly ushort S1_Acc_time = 20100; // motor hızlanma rampası
                 public static readonly ushort S1_Dec_time = 20102; // motor yavaşlama rampası
@@ -50,6 +53,7 @@ namespace DizProtezApp.Services
                 public static readonly ushort LOADCELL_1_HATA = 20418; // HATA KODU OKUNACAK
 
         // DWORD Adresleri
+
             // Servo 1
                 public static readonly ushort S1_ManuelHız = 20130; // gidilecek pozisyon
                 public static readonly ushort S1_Pozisyon = 20104; // gidilecek pozisyon
@@ -76,23 +80,64 @@ namespace DizProtezApp.Services
                 public static readonly ushort S3_TEST_GERI_POZ = 20324; // TEST S3 GERİ POZİSYONU
                 public static readonly ushort S3_TEST_ILERI_HIZ = 20326; // TEST S3 İLERİ GİDERKEN Kİ HIZ
                 public static readonly ushort S3_TEST_GERI_HIZ = 20328; // TEST S3 GERİ GİDERKEN Kİ HIZ
-            // Loadcell 1
-                public static readonly ushort LOADCELL_1_DWORD = 20414; // servo 1 i ölçen loadcell veri 1 YUKARDAKİ
-        public static readonly ushort LOADCELL_2_DWORD = 20424; // servo 1 i ölçen loadcell veri 1 AŞŞAĞIDAKİ
 
-        // REAL Adresleri
 
-        // TEST Loadcell 1
-        public static readonly ushort L1_TEST_POZ_LIMIT = 20134; // TEST  L1 POZITIF YÜK LİMİTİ
+        // REAL Adresleri BU ADRESLERİ YOLLARKEN 1000 İLE ÇARP ALIRKEN 1000 E BÖL. PLC TARAFINDA DA AYNI ŞEKİLDE (BUNLAR ASLINDA DWORD) 
+
+            // Loadcell 1 (FEMORAL ÜST)
+                public static readonly ushort LOADCELL_TOP_DWORD = 224; // servo 1 i ölçen loadcell veri YUKARDAKİ
+            // Loadcell 2 (A-P ALT)
+                public static readonly ushort LOADCELL_2_DWORD = 850; // servo 2 i ölçen loadcell veri AŞŞAĞIDAKİ
+            // TEST  1
+                public static readonly ushort L1_TEST_POZ_LIMIT = 20134; // TEST  L1 POZITIF YÜK LİMİTİ
                 public static readonly ushort L1_TEST_NEG_LIMIT = 20136; // TEST  L1 NEGATİF YÜK LİMİTİ
-            // TEST Loadcell 2
+            // TEST  2
                 public static readonly ushort L2_TEST_POZ_LIMIT = 20134; // TEST  L2 POZITIF YÜK LİMİTİ
                 public static readonly ushort L2_TEST_NEG_LIMIT = 20136; // TEST  L2NEGATİF YÜK LİMİTİ
-            // TEST Loadcell 3
+            // TEST  3
                 public static readonly ushort L3_TEST_POZ_LIMIT = 20134; // TEST  L3 POZITIF YÜK LİMİTİ
                 public static readonly ushort L3_TEST_NEG_LIMIT = 20136; // TEST  L3NEGATİF YÜK LİMİTİ
+            // DENEME
+                public static readonly ushort DENEME = 20416;
+                public static readonly ushort loadcell = 20414;
+                public static readonly ushort kgset = 20417;
+        public static readonly ushort altkgset = 20417;
 
-        public static readonly ushort DENEME = 840;
+        //XAML Kısmı:
+        //    <TextBox x:Name="deneme"
+        //     Text="{Binding deneme, Mode=TwoWay, StringFormat=F3}"
+        //     FontSize="18"
+        //     Background="Orange"
+        //     Foreground="White"
+        //     TextAlignment="Center"
+        //     Width="159"
+        //     HorizontalAlignment="Left"
+        //     GotFocus="TextBox_GotFocus"
+        //     LostFocus="TextBox_LostFocus" />
+
+        //C# Kısmı:
+
+        //    // Else if bloğu içindeki kod
+        //    else if (textBox.Name == "deneme")
+        //    {
+        //        int ddeneme = (int)(ViewModel.deneme * 1000);
+        //        _plcService.WriteDWord(PlcRegisters.DENEME, ddeneme);
+        //    }
+
+        //    // PLC'den veri okuma ve güncelleme (genellikle timer tick gibi bir metodun içinde)
+        //    ViewModel.deneme = _plcService.ReadDWord(PlcRegisters.DENEME) / 1000.0;
+
+        //    // Property tanımı
+        //    private double _deneme;
+        //        public double deneme
+        //        {
+        //            get => _deneme;
+        //            set
+        //            {
+        //                _deneme = value;
+        //                OnPropertyChanged();
+        //            }
+        //        }
 
     }
 }

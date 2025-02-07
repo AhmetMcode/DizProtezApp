@@ -126,7 +126,7 @@ namespace DizProtezApp
             }
         }
 
-        private void RefreshServoData()
+        private async void RefreshServoData()
         {
             // Eğer TextBox odaklanmışsa ya da PLC bağlantısı yoksa güncellemeyi durdur
             if (_isTextBoxFocused || !_plcService.IsConnected)
@@ -136,8 +136,8 @@ namespace DizProtezApp
             {
                 // PLC'den değerleri oku ve mutlak değerlerini al
                 // PLC'den ham değerleri oku (negatif/pozitif korunarak)
-                double originalForward = _plcService.ReadDWord(PlcRegisters.S1_FWD_Speed) / 10.0;
-                double originalReverse = _plcService.ReadDWord(PlcRegisters.S1_REV_Speed) / 10.0;
+                double originalForward = (await _plcService.ReadDWord(PlcRegisters.S1_FWD_Speed)) / 10.0;
+                double originalReverse = (await _plcService.ReadDWord(PlcRegisters.S1_REV_Speed)) / 10.0;
                 // Mutlak değerleri al
                 double absForward = Math.Abs(originalForward);
                 double absReverse = Math.Abs(originalReverse);
@@ -154,7 +154,7 @@ namespace DizProtezApp
                     _viewModel.Servo1JogSpeedBind = double.Parse($"{sign}{Math.Max(absForward, absReverse)}");
                 }
 
-                _viewModel.Servo1CurrentPosition = _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz) / 1000.0;
+                _viewModel.Servo1CurrentPosition = (await _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz)) / 1000.0;
             }
             catch (Exception ex)
             {
@@ -164,39 +164,36 @@ namespace DizProtezApp
 
         private async void RefreshServo1PositionAndLoadcell()
         {
-            // PLC bağlantısı yoksa çalışmayı durdur
-            if (!_plcService.IsConnected)
-                return;
+            if (!_plcService.IsConnected) return;
 
             try
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
-                    int displacement = _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz);
+                    // Displacement okuma (örnekte integer olarak kalıyor)
+                    int displacement = await _plcService.ReadDWord(PlcRegisters.S1_Anlık_Poz);
 
-                    ////-----------üstteki loadceliin doğru newton hali
-                    //float LCUSTkgValue = _plcService.ReadDWord(PlcRegisters.LOADCELL_1_DWORD) / 25;
-                    //double force = LCUSTkgValue * 9.80665;
-                    ////-----------
-                    ///
-                    float LCUSTkgValue = _plcService.ReadDWord(PlcRegisters.LOADCELL_1_DWORD) / 25;
+                    // Force değerini doğru şekilde oku ve Newton'a çevir
+                    double forceKg = await _plcService.ReadDWord(PlcRegisters.LOADCELL_2_DWORD);
+                    double forceAxialN = forceKg * 9.81; // Newton'a çevir
 
+                    // LOADCELL_TOP_DWORD değeri (Force2) okunup Newton'a çevriliyor
+                    double forceTopKg = await _plcService.ReadDWord(PlcRegisters.LOADCELL_TOP_DWORD) / 1000.0;
+                    double forceFemoralN = forceTopKg * 9.81;
 
-                    //-----------alttaki loadceliin doğru newton hali
-                    float LCALTkgValue = _plcService.ReadDWord(PlcRegisters.LOADCELL_2_DWORD) / 1000;
-                    double force = LCALTkgValue * 9.80665;
-                    //-----------
-
-                    Console.WriteLine($"LC ÜST  {LCUSTkgValue} ------ LC ALT  {LCUSTkgValue}");
-
-                    // ViewModel değerlerini güncelle
-                    _viewModel.Displacement1 = displacement;
-                    _viewModel.Force1 = force;
+                    // UI güncellemeleri için Dispatch
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _viewModel.Displacement1 = displacement;
+                        _viewModel.Force1 = Math.Round(forceAxialN, 3); // 3 ondalık basamak
+                        _viewModel.Force2 = Math.Round(forceFemoralN, 3);
+                        _viewModel.AddDataPoints();
+                    });
                 });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Veriler okunamadı: {ex.Message}");
+                Console.WriteLine($"Veri okuma hatası: {ex.Message}");
             }
         }
 

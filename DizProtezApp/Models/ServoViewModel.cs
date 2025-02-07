@@ -17,8 +17,29 @@ public class ServoViewModel : INotifyPropertyChanged
     private double _servo1CurrentPosition;
     private double _servo1TargetPosition;
 
-    private double _deneme;
+    private double _lc1;
+    private double _kgset;
+    private double _altkgset;
 
+    public double kgset
+    {
+        get => _kgset;
+        set
+        {
+            _kgset = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public double altkgset
+    {
+        get => _altkgset;
+        set
+        {
+            _altkgset = value;
+            OnPropertyChanged();
+        }
+    }
 
     public double Servo1Acc
     {
@@ -40,15 +61,6 @@ public class ServoViewModel : INotifyPropertyChanged
         }
     }
 
-    public double deneme
-    {
-        get => _deneme;
-        set
-        {
-            _deneme = value;
-            OnPropertyChanged();
-        }
-    }
 
     public double Servo1CurrentPosition
     {
@@ -56,6 +68,16 @@ public class ServoViewModel : INotifyPropertyChanged
         set
         {
             _servo1CurrentPosition = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public double lc1
+    {
+        get => _lc1;
+        set
+        {
+            _lc1 = value;
             OnPropertyChanged();
         }
     }
